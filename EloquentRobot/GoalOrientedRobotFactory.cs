@@ -6,7 +6,7 @@ namespace EloquentRobot
 {
     public class GoalOrientedRobotFactory : IRobotFactory<GoalOrientedRobot>
     {
-        public GoalOrientedRobot Create(VillageState state, Queue<string> route)
+        public GoalOrientedRobot Create(Village state, Queue<string> route)
         {
             if (route.Count == 0)
             {

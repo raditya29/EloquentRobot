@@ -11,7 +11,7 @@ namespace EloquentRobot
             "Marketplace", "Post Office"
         };
 
-        public RouteRobot Create(VillageState state, Queue<string> memory)
+        public RouteRobot Create(Village state, Queue<string> memory)
         {
             if (memory.Count == 0) memory = new Queue<string>(mailRoute); // will be called exactly two times
 

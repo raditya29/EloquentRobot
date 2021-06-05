@@ -6,7 +6,7 @@ namespace EloquentRobot
 {
     public class LazyRobotFactory : IRobotFactory<LazyRobot>
     {
-        public LazyRobot Create(VillageState state, Queue<string> route)
+        public LazyRobot Create(Village state, Queue<string> route)
         {
             var (place, parcels) = (state.Place, state.Parcels);
             if (route.Count == 0)

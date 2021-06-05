@@ -6,17 +6,11 @@ namespace EloquentRobot
 {
     class Program
     {
-        static readonly string[] roads = new string[] {
-            "Alice's House-Bob's House", "Alice's House-Cabin",
-            "Alice's House-Post Office", "Bob's House-Town Hall",
-            "Daria's House-Ernie's House", "Daria's House-Town Hall",
-            "Ernie's House-Grete's House", "Grete's House-Farm",
-            "Grete's House-Shop", "Marketplace-Farm",
-            "Marketplace-Post Office", "Marketplace-Shop",
-            "Marketplace-Town Hall", "Shop-Town Hall"
-        };
+        
 
-        internal static readonly Dictionary<string, string[]> RoadGraph = BuildGraph(roads);
+        
+
+        internal static readonly Dictionary<Place, Place[]> RoadGraph = BuildGraph(roads);
 
         static void Main(string[] args)
         {
@@ -30,27 +24,24 @@ namespace EloquentRobot
             //CompareRobots(new GoalOrientedRobotFactory().Create, new Queue<string>(), new LazyRobotFactory().Create, new Queue<string>());
         }
 
-        static Dictionary<string, string[]> BuildGraph(string[] roads)
+        static Dictionary<Place, Place[]> BuildGraph(Road[] roads)
         {
-            var tempGraph = new Dictionary<string, Stack<string>>();
+            var graph = new Dictionary<Place, Stack<Place>>();
 
-            foreach (string[] fromTo in roads.Select(road => road.Split('-')))
+            foreach (var (place1, place2) in roads)
             {
-                if (tempGraph.ContainsKey(fromTo[0])) tempGraph[fromTo[0]].Push(fromTo[1]);
-                else tempGraph.Add(fromTo[0], new Stack<string>(new string[] { fromTo[1] }));
+                if (graph.ContainsKey(place1)) graph[place1].Push(place2);
+                else graph.Add(place1, new Stack<Place>(new Place[] { place2 }));
 
-                if (tempGraph.ContainsKey(fromTo[1])) tempGraph[fromTo[1]].Push(fromTo[0]);
-                else tempGraph.Add(fromTo[1], new Stack<string>(new string[] { fromTo[0] }));
+                if (graph.ContainsKey(place2)) graph[place2].Push(place1);
+                else graph.Add(place2, new Stack<Place>(new Place[] { place1 }));
             }
 
-            var graph = new Dictionary<string, string[]>();
-            foreach (var pair in tempGraph) graph.Add(pair.Key, pair.Value.ToArray());
-
-            return graph;
+            return graph.ToDictionary(g => g.Key, g => g.Value.ToArray());
         }
 
-        static int CountSteps(VillageState state,
-            Func<VillageState, Queue<string>, Robot> robotFactory, Queue<string> memory)
+        static int CountSteps(Village state,
+            Func<Village, Queue<string>, Robot> robotFactory, Queue<string> memory)
         {
             int turn = 0;
             while (true)
@@ -67,8 +58,8 @@ namespace EloquentRobot
             return turn;
         }
 
-        static void RunRobot(VillageState state,
-            Func<VillageState, Queue<string>, Robot> robotFactory, Queue<string> memory) // memory route robot factory
+        static void RunRobot(Village state,
+            Func<Village, Queue<string>, Robot> robotFactory, Queue<string> memory) // memory route robot factory
         {
             int turn = 0;
             while (true)
@@ -87,13 +78,13 @@ namespace EloquentRobot
             }
         }
 
-        static void CompareRobots(Func<VillageState, Queue<string>, Robot> robot1Factory, Queue<string> robot1Memory,
-            Func<VillageState, Queue<string>, Robot> robot2Factory, Queue<string> robot2Memory) 
+        static void CompareRobots(Func<Village, Queue<string>, Robot> robot1Factory, Queue<string> robot1Memory,
+            Func<Village, Queue<string>, Robot> robot2Factory, Queue<string> robot2Memory) 
         {
             int total1 = 0, total2 = 0;
             for (int i = 0; i < 100; i++)
             {
-                var state = VillageState.Random();
+                var state = Village.Random();
                 total1 += CountSteps(state, robot1Factory, robot1Memory);
                 total2 += CountSteps(state, robot2Factory, robot2Memory);
             }
@@ -105,5 +96,7 @@ namespace EloquentRobot
         internal static string RandomPick(string[] places) => places[new Random().Next(0, places.Length)];
     }
 
-    public record Parcel(string Place, string Address);
+    public record Place(string Name);
+
+    public record Road(Place PlaceA, Place PlaceB);
 }
