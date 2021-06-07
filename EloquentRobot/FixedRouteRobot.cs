@@ -20,7 +20,7 @@ namespace EloquentRobot
 
             return new FixedRouteRobot(next, route.ToArray(),
                                        Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination))
-                                                   .Where(parcel => parcel.Position != parcel.Destination).ToArray());
+                                              .Where(parcel => parcel.Position != parcel.Destination).ToArray());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EloquentRobot
@@ -7,6 +8,8 @@ namespace EloquentRobot
     {
         public override Robot Move()
         {
+            if (Parcels.Length == 0) throw new InvalidOperationException(nameof(Parcels));
+
             Queue<string> route = new Queue<string>(Route);
             if (Route.Length == 0)
             {

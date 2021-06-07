@@ -10,8 +10,7 @@ namespace EloquentRobot
             if (Parcels.Length == 0) throw new InvalidOperationException(nameof(Parcels));
 
             string[] possibleNextPlaces = Village.RoadGraph[Position];
-            Random random = new();
-            string next = possibleNextPlaces[random.Next(0, possibleNextPlaces.Length)];
+            string next = possibleNextPlaces[new Random().Next(0, possibleNextPlaces.Length)];
 
             return new DumbRobot(next, null, 
                                  Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination))
