@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace EloquentRobot
 {
@@ -6,14 +7,14 @@ namespace EloquentRobot
     {
         static void Main(string[] args)
         {
-            //RunRobot(new DumbRobot(Village.POST_OFFICE, null, Parcel.ProduceRandomParcels()));
-            //RunRobot(new FixedRouteRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
-            //RunRobot(new GoalOrientedRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
-            //RunRobot(new LazyRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
+            //RunRobot(new DumbRobot(Village.POST_OFFICE, Parcel.ProduceRandomParcels(), Array.Empty<string>()));
+            //RunRobot(new FixedRouteRobot(Village.POST_OFFICE, Parcel.ProduceRandomParcels(), Array.Empty<string>()));
+            //RunRobot(new GoalOrientedRobot(Village.POST_OFFICE, Parcel.ProduceRandomParcels(), Array.Empty<string>()));
+            RunRobot(new LazyRobot(Village.POST_OFFICE, Parcel.ProduceRandomParcels(), Array.Empty<string>()));
 
             //CompareRobots(new DumbRobotFactory(), new FixedRouteRobotFactory());
             //CompareRobots(new FixedRouteRobotFactory(), new GoalOrientedRobotFactory());
-            CompareRobots(new GoalOrientedRobotFactory(), new LazyRobotFactory());
+            //CompareRobots(new GoalOrientedRobotFactory(), new LazyRobotFactory());
         }
 
         static int CountSteps(Robot robot)
@@ -34,7 +35,7 @@ namespace EloquentRobot
             while (robot.HasUndeliveredParcels)
             {
                 robot = robot.Move();
-                Console.WriteLine($"Moved to {robot.Position}");
+                Console.WriteLine($"at {robot.Position}. Dropping {robot.Parcels.Count(parcel => parcel.Position == robot.Position && parcel.Destination == robot.Position)} parcel(s).");
                 steps++;
             }
 

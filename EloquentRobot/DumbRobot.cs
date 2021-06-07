@@ -14,7 +14,7 @@ namespace EloquentRobot
 
             return new DumbRobot(next, 
                                  UndeliveredParcels.Select(parcel => parcel.Position == Position ? new Parcel(next, parcel.Destination) : parcel).ToArray(), // update pickup / delivery status
-                                 null); 
+                                 Array.Empty<string>()); 
         }
     }
 }
