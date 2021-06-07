@@ -6,87 +6,57 @@ namespace EloquentRobot
 {
     class Program
     {
-        
-
-        
-
-        internal static readonly Dictionary<Place, Place[]> RoadGraph = BuildGraph(roads);
-
         static void Main(string[] args)
         {
-            //var sharedRandomVillageState = VillageState.Random();
-            //RunRobot(VillageState.Random(), new DumbRobotFactory().Create, null); // run dumb robot
-            //RunRobot(sharedRandomVillageState, new FixedRouteRobotFactory().Create, new Queue<string>()); // run route robot
-            //RunRobot(sharedRandomVillageState, new GoalOrientedRobotFactory().Create, new Queue<string>()); // run goal oriented robot
+            //RunRobot(new DumbRobot(Village.POST_OFFICE, null, Parcel.ProduceRandomParcels()));
+            //RunRobot(new FixedRouteRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
+            RunRobot(new GoalOrientedRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
 
-            CompareRobots(new DumbRobotFactory().Create, null, new FixedRouteRobotFactory().Create, new Queue<string>());
+            // var sharedRandomVillageState = VillageState.Random();
+            // RunRobot(new DumbRobotFactory().Create(Village.POST_OFFICE, Parcel.ProduceRandomParcels())); // run dumb robot
+            // RunRobot(new FixedRouteRobotFactory().Create(Village.POST_OFFICE, Parcel.ProduceRandomParcels())); // run route robot
+            // RunRobot(sharedRandomVillageState, new GoalOrientedRobotFactory().Create, new Queue<string>()); // run goal oriented robot
+
+            // CompareRobots(new DumbRobotFactory().Create, new FixedRouteRobotFactory().Create);
             //CompareRobots(new FixedRouteRobotFactory().Create, new Queue<string>(), new GoalOrientedRobotFactory().Create, new Queue<string>());
             //CompareRobots(new GoalOrientedRobotFactory().Create, new Queue<string>(), new LazyRobotFactory().Create, new Queue<string>());
         }
 
-        static Dictionary<Place, Place[]> BuildGraph(Road[] roads)
+        static int CountSteps(Robot robot)
         {
-            var graph = new Dictionary<Place, Stack<Place>>();
-
-            foreach (var (place1, place2) in roads)
+            int steps = 0;
+            while (robot.Parcels.Length != 0)
             {
-                if (graph.ContainsKey(place1)) graph[place1].Push(place2);
-                else graph.Add(place1, new Stack<Place>(new Place[] { place2 }));
-
-                if (graph.ContainsKey(place2)) graph[place2].Push(place1);
-                else graph.Add(place2, new Stack<Place>(new Place[] { place1 }));
+                robot = robot.Move();
+                steps++;
             }
 
-            return graph.ToDictionary(g => g.Key, g => g.Value.ToArray());
+            return steps;
         }
 
-        static int CountSteps(Village state,
-            Func<Village, Queue<string>, Robot> robotFactory, Queue<string> memory)
+        static void RunRobot(Robot robot)
         {
-            int turn = 0;
-            while (true)
+            int steps = 0;
+            while (robot.Parcels.Length != 0)
             {
-                if (state.Parcels.Length == 0) break;
-
-                var action = robotFactory(state, memory);
-                state = state.Move(action.Direction);
-                memory = action.Memory;
-
-                turn++;
+                robot = robot.Move();
+                Console.WriteLine($"Moved to {robot.Position}");
+                steps++;
             }
 
-            return turn;
+            Console.WriteLine($"Done in {steps}.");
         }
 
-        static void RunRobot(Village state,
-            Func<Village, Queue<string>, Robot> robotFactory, Queue<string> memory) // memory route robot factory
-        {
-            int turn = 0;
-            while (true)
-            {
-                if (state.Parcels.Length == 0)
-                {
-                    Console.WriteLine($"Done in {turn}");
-                    break;
-                }
-
-                var action = robotFactory(state, memory);
-                state = state.Move(action.Direction);
-                memory = action.Memory;
-                Console.WriteLine($"Moved to {action.Direction}");
-                turn++;
-            }
-        }
-
-        static void CompareRobots(Func<Village, Queue<string>, Robot> robot1Factory, Queue<string> robot1Memory,
-            Func<Village, Queue<string>, Robot> robot2Factory, Queue<string> robot2Memory) 
+        static void CompareRobots(Func<string, Parcel[], Robot> robot1Factory, Func<string, Parcel[], Robot> robot2Factory) 
         {
             int total1 = 0, total2 = 0;
             for (int i = 0; i < 100; i++)
             {
-                var state = Village.Random();
-                total1 += CountSteps(state, robot1Factory, robot1Memory);
-                total2 += CountSteps(state, robot2Factory, robot2Memory);
+                var parcels = Parcel.ProduceRandomParcels();
+                var robot1 = robot1Factory(Village.POST_OFFICE, parcels);
+                var robot2 = robot2Factory(Village.POST_OFFICE, parcels);
+                total1 += CountSteps(robot1);
+                total2 += CountSteps(robot2);
             }
 
             Console.WriteLine($"first robot averaging {(decimal)total1 / 100} steps per task.");
@@ -96,7 +66,5 @@ namespace EloquentRobot
         internal static string RandomPick(string[] places) => places[new Random().Next(0, places.Length)];
     }
 
-    public record Place(string Name);
-
-    public record Road(Place PlaceA, Place PlaceB);
+    public record Road(string PlaceA, string PlaceB);
 }

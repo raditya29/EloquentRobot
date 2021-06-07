@@ -6,42 +6,33 @@ namespace EloquentRobot
 {
     public class Parcel
     {
-        public Place Origin { get; init; }
-        public Place Destination { get; init; }
-        public ParcelStatus State { get; init; }
+        public string Position { get; init; }
+        public string Destination { get; init; }
 
-        public Parcel(Place origin, Place destination, ParcelStatus state)
+        public Parcel(string position, string destination)
         {
-            Origin = origin ?? throw new ArgumentNullException(nameof(origin));
+            Position = position ?? throw new ArgumentNullException(nameof(position));
             Destination = destination ?? throw new ArgumentNullException(nameof(destination));
-            State = state;
         }
 
-        static Parcel[] ProduceRandomParcels(int parcelCounts = 5)
+        public static Parcel[] ProduceRandomParcels(int parcelCounts = 5)
         {
             var parcels = new Stack<Parcel>();
             for (int index = 0; index < parcelCounts; index++)
             {
                 var random = new Random();
-                var places = Program.RoadGraph.Keys.ToArray();
+                var places = Village.RoadGraph.Keys.ToArray();
                 var origin = places[random.Next(0, places.Length)];
-                Place destination;
+                string destination;
                 do
                 {
                     destination = places[random.Next(0, places.Length)];
                 } while (origin == destination);
 
-                parcels.Push(new Parcel(origin, destination, ParcelStatus.NotPickup));
+                parcels.Push(new Parcel(origin, destination));
             }
 
             return parcels.ToArray();
         }
-    }
-
-    public enum ParcelStatus
-    {
-        NotPickup = 0,
-        OnDelivery,
-        Delivered
     }
 }

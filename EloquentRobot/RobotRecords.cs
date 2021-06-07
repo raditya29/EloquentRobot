@@ -1,40 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace EloquentRobot
 {
-    //public record GoalOrientedRobot(string Direction, Queue<string> Memory) : Robot(Direction, Memory);
-
-    //public record LazyRobot(string Direction, Queue<string> Memory) : Robot(Direction, Memory);
-
-    public abstract record Robot(Place Place, Place[] Route)
+    public abstract record Robot(string Position, string[] Route, Parcel[] Parcels)
     {
-        public Place Place { get; init; } = Place ?? throw new ArgumentNullException(nameof(Place));
-        public Place[] Route { get; init; } = Route; // nullable
-        public Parcel[]
+        public string Position { get; init; } = Position ?? throw new ArgumentNullException(nameof(Position));
+        public string[] Route { get; init; } = Route; // nullable
+        public Parcel[] Parcels { get; init; } = Parcels ?? throw new ArgumentNullException(nameof(Parcels));
 
         public abstract Robot Move();
-    }
 
-    public record GoalOrientedRobot(Place Place, Place[] Route) : Robot(Place, Route)
-    {
-        public override Robot Move()
-        {
-            if (Route.Length == 0)
-            {
-                var parcel = state.Parcels[0];
-                if (parcel.Place != state.Place) route = new Queue<string>(FindRoute(Program.RoadGraph, state.Place, parcel.Place));
-                else route = new Queue<string>(FindRoute(Program.RoadGraph, state.Place, parcel.Address));
-            }
-
-            return new GoalOrientedRobot(route.Dequeue(), route);
-        }
-
-        private static Place[] FindRoute(Place from, Place to)
+        public static string[] FindRoute(string from, string to)
         {
             var graph = Village.BuildGraph();
-            var work = (new[] { new { At = from, Route = Array.Empty<Place>() } }).ToList();
+            var work = (new[] { new { At = from, Route = Array.Empty<string>() } }).ToList();
             for (int i = 0; i < work.Count; i++)
             {
                 var (at, route) = (work[i].At, work[i].Route);
@@ -45,7 +25,7 @@ namespace EloquentRobot
                 }
             }
 
-            return Array.Empty<Place>(); // with our graph, we will never reach this code
+            return Array.Empty<string>(); // with our graph, we will never reach this code
         }
     }
 }
