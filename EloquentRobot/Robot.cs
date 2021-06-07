@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EloquentRobot
@@ -8,6 +9,10 @@ namespace EloquentRobot
         public string Position { get; init; } = Position ?? throw new ArgumentNullException(nameof(Position));
         public string[] Route { get; init; } = Route; // nullable
         public Parcel[] Parcels { get; init; } = Parcels ?? throw new ArgumentNullException(nameof(Parcels));
+
+        protected IEnumerable<Parcel> UndeliveredParcels => Parcels.Where(parcel => !(parcel.Position == Position && parcel.Destination == Position));
+
+        public bool HasUndeliveredParcels => UndeliveredParcels.Any();
 
         public abstract Robot Move();
 

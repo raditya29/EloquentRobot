@@ -8,22 +8,22 @@ namespace EloquentRobot
     {
         public override Robot Move()
         {
-            if (Parcels.Length == 0) throw new InvalidOperationException(nameof(Parcels));
+            if (!HasUndeliveredParcels) throw new InvalidOperationException(nameof(UndeliveredParcels));
 
             Queue<string> route = new Queue<string>(Route);
             if (Route.Length == 0)
             {
                 // Describe a route for every parcel
-                var routes = Parcels.Select(parcel =>
+                var routes = UndeliveredParcels.Select(parcel =>
                 {
                     if (parcel.Position != Position) return new RoutePickupPair(FindRoute(Position, parcel.Position), true);
                     else return new RoutePickupPair(FindRoute(Position, parcel.Destination), false);
-                }).ToArray();
+                });
 
                 // This determines the precedence a route gets when choosing.
                 // Route length counts negatively, routes that pick up a package
                 // get a small bonus.
-                var filteredRoute = routes.Aggregate(routes[0],
+                var filteredRoute = routes.Aggregate(routes.First(),
                                             (accumulator, current) =>
                                                 (Score(accumulator.Route, accumulator.Pickup) > Score(current.Route, current.Pickup) ? accumulator : current)).Route;
                 route = new Queue<string>(filteredRoute);
@@ -31,8 +31,7 @@ namespace EloquentRobot
             
             string next = route.Dequeue();
             return new LazyRobot(next, route.ToArray(),
-                                       Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination)) // update pickup / delivery status
-                                              .Where(parcel => parcel.Position != parcel.Destination).ToArray()); // drop if destination
+                                       UndeliveredParcels.Select(parcel => parcel.Position == Position ? new Parcel(next, parcel.Destination) : parcel).ToArray()); // update pickup / delivery status
         }
 
         private static decimal Score(string[] route, bool pickup) => (decimal)((pickup ? 0.5 : 0) - route.Length);

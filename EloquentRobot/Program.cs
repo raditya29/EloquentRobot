@@ -9,7 +9,7 @@ namespace EloquentRobot
             //RunRobot(new DumbRobot(Village.POST_OFFICE, null, Parcel.ProduceRandomParcels()));
             //RunRobot(new FixedRouteRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
             //RunRobot(new GoalOrientedRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
-            //RunRobot(new LazyRobot(Village.POST_OFFICE, Array.Empty<string>(), randomParcels)); // Parcel.ProduceRandomParcels()));
+            //RunRobot(new LazyRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
 
             //CompareRobots(new DumbRobotFactory(), new FixedRouteRobotFactory());
             //CompareRobots(new FixedRouteRobotFactory(), new GoalOrientedRobotFactory());
@@ -19,7 +19,7 @@ namespace EloquentRobot
         static int CountSteps(Robot robot)
         {
             int steps = 0;
-            while (robot.Parcels.Length != 0)
+            while (robot.HasUndeliveredParcels)
             {
                 robot = robot.Move();
                 steps++;
@@ -31,7 +31,7 @@ namespace EloquentRobot
         static void RunRobot(Robot robot)
         {
             int steps = 0;
-            while (robot.Parcels.Length != 0)
+            while (robot.HasUndeliveredParcels)
             {
                 robot = robot.Move();
                 Console.WriteLine($"Moved to {robot.Position}");

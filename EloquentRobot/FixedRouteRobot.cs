@@ -13,14 +13,13 @@ namespace EloquentRobot
 
         public override Robot Move()
         {
-            if (Parcels.Length == 0) throw new InvalidOperationException(nameof(Parcels));
+            if (!HasUndeliveredParcels) throw new InvalidOperationException(nameof(UndeliveredParcels));
 
             Queue<string> route = (Route.Length == 0) ? new Queue<string>(mailRoute) : new Queue<string>(Route);
             string next = route.Dequeue();
 
             return new FixedRouteRobot(next, route.ToArray(),
-                                       Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination)) // update pickup / delivery status
-                                              .Where(parcel => parcel.Position != parcel.Destination).ToArray()); // drop if destination
+                                       UndeliveredParcels.Select(parcel => parcel.Position == Position ? new Parcel(next, parcel.Destination) : parcel).ToArray()); // update pickup / delivery status
         }
     }
 }
