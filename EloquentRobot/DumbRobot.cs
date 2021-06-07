@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace EloquentRobot
 {
-    public record DumbRobot(string Position, Parcel[] Parcels, string[] Route = null) : Robot(Position, Parcels, Route)
+    public record DumbRobot(string Position, Parcel[] Parcels, string[] Route) : Robot(Position, Parcels, Route)
     {
         public override Robot Move()
         {

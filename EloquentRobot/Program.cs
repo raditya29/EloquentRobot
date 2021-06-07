@@ -62,6 +62,4 @@ namespace EloquentRobot
             Console.WriteLine($"{robot2FactoryType} averaging {(decimal)total2 / 100} steps per task.");
         }
     }
-
-    public record Road(string PlaceA, string PlaceB);
 }

@@ -8,7 +8,7 @@ namespace EloquentRobot
     {
         public string Position { get; init; } = Position ?? throw new ArgumentNullException(nameof(Position));
         public Parcel[] Parcels { get; init; } = Parcels ?? throw new ArgumentNullException(nameof(Parcels));
-        public string[] Route { get; init; } = Route; // nullable
+        public string[] Route { get; init; } = Route ?? throw new ArgumentNullException(nameof(Route));
 
         protected IEnumerable<Parcel> UndeliveredParcels => Parcels.Where(parcel => !(parcel.Position == Position && parcel.Destination == Position));
 

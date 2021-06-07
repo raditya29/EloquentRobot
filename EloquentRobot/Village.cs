@@ -43,4 +43,5 @@ namespace EloquentRobot
         }
     }
 
+    public record Road(string PlaceA, string PlaceB);
 }

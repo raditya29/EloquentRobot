@@ -9,7 +9,7 @@ namespace EloquentRobot
 
     public class DumbRobotFactory : IRobotFactory<DumbRobot>
     {
-        public DumbRobot Create(string position, Parcel[] parcels) => new DumbRobot(position, parcels);
+        public DumbRobot Create(string position, Parcel[] parcels) => new DumbRobot(position, parcels, Array.Empty<string>());
     }
 
     public class FixedRouteRobotFactory : IRobotFactory<FixedRouteRobot>
