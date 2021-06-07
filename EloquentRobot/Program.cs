@@ -9,11 +9,11 @@ namespace EloquentRobot
             //RunRobot(new DumbRobot(Village.POST_OFFICE, null, Parcel.ProduceRandomParcels()));
             //RunRobot(new FixedRouteRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
             //RunRobot(new GoalOrientedRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
-            //RunRobot(new LazyRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
+            //RunRobot(new LazyRobot(Village.POST_OFFICE, Array.Empty<string>(), randomParcels)); // Parcel.ProduceRandomParcels()));
 
-            //CompareRobots(new DumbRobotFactory().Create, new FixedRouteRobotFactory().Create);
-            //CompareRobots(new FixedRouteRobotFactory().Create, new GoalOrientedRobotFactory().Create);
-            CompareRobots(new GoalOrientedRobotFactory().Create, new LazyRobotFactory().Create);
+            //CompareRobots(new DumbRobotFactory(), new FixedRouteRobotFactory());
+            //CompareRobots(new FixedRouteRobotFactory(), new GoalOrientedRobotFactory());
+            CompareRobots(new GoalOrientedRobotFactory(), new LazyRobotFactory());
         }
 
         static int CountSteps(Robot robot)
@@ -41,20 +41,25 @@ namespace EloquentRobot
             Console.WriteLine($"Done in {steps}.");
         }
 
-        static void CompareRobots(Func<string, Parcel[], Robot> robot1Factory, Func<string, Parcel[], Robot> robot2Factory) 
+        static void CompareRobots(IRobotFactory<Robot> robot1Factory, IRobotFactory<Robot> robot2Factory) 
         {
             int total1 = 0, total2 = 0;
+            var robot1FactoryType = string.Empty;
+            var robot2FactoryType = string.Empty;
             for (int i = 0; i < 100; i++)
             {
                 var parcels = Parcel.ProduceRandomParcels();
-                var robot1 = robot1Factory(Village.POST_OFFICE, parcels);
-                var robot2 = robot2Factory(Village.POST_OFFICE, parcels);
+                var robot1 = robot1Factory.Create(Village.POST_OFFICE, parcels);
+                if (robot1FactoryType == string.Empty) robot1FactoryType = robot1.GetType().Name;
                 total1 += CountSteps(robot1);
+
+                var robot2 = robot2Factory.Create(Village.POST_OFFICE, parcels);
+                if (robot2FactoryType == string.Empty) robot2FactoryType = robot2.GetType().Name;
                 total2 += CountSteps(robot2);
             }
 
-            Console.WriteLine($"first robot averaging {(decimal)total1 / 100} steps per task.");
-            Console.WriteLine($"second robot averaging {(decimal)total2 / 100} steps per task.");
+            Console.WriteLine($"{robot1FactoryType} averaging {(decimal)total1 / 100} steps per task.");
+            Console.WriteLine($"{robot2FactoryType} averaging {(decimal)total2 / 100} steps per task.");
         }
     }
 
