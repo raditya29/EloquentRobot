@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace EloquentRobot
 {
@@ -10,16 +8,12 @@ namespace EloquentRobot
         {
             //RunRobot(new DumbRobot(Village.POST_OFFICE, null, Parcel.ProduceRandomParcels()));
             //RunRobot(new FixedRouteRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
-            RunRobot(new GoalOrientedRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
+            //RunRobot(new GoalOrientedRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
+            //RunRobot(new LazyRobot(Village.POST_OFFICE, Array.Empty<string>(), Parcel.ProduceRandomParcels()));
 
-            // var sharedRandomVillageState = VillageState.Random();
-            // RunRobot(new DumbRobotFactory().Create(Village.POST_OFFICE, Parcel.ProduceRandomParcels())); // run dumb robot
-            // RunRobot(new FixedRouteRobotFactory().Create(Village.POST_OFFICE, Parcel.ProduceRandomParcels())); // run route robot
-            // RunRobot(sharedRandomVillageState, new GoalOrientedRobotFactory().Create, new Queue<string>()); // run goal oriented robot
-
-            // CompareRobots(new DumbRobotFactory().Create, new FixedRouteRobotFactory().Create);
-            //CompareRobots(new FixedRouteRobotFactory().Create, new Queue<string>(), new GoalOrientedRobotFactory().Create, new Queue<string>());
-            //CompareRobots(new GoalOrientedRobotFactory().Create, new Queue<string>(), new LazyRobotFactory().Create, new Queue<string>());
+            //CompareRobots(new DumbRobotFactory().Create, new FixedRouteRobotFactory().Create);
+            //CompareRobots(new FixedRouteRobotFactory().Create, new GoalOrientedRobotFactory().Create);
+            CompareRobots(new GoalOrientedRobotFactory().Create, new LazyRobotFactory().Create);
         }
 
         static int CountSteps(Robot robot)
@@ -62,8 +56,6 @@ namespace EloquentRobot
             Console.WriteLine($"first robot averaging {(decimal)total1 / 100} steps per task.");
             Console.WriteLine($"second robot averaging {(decimal)total2 / 100} steps per task.");
         }
-
-        internal static string RandomPick(string[] places) => places[new Random().Next(0, places.Length)];
     }
 
     public record Road(string PlaceA, string PlaceB);
