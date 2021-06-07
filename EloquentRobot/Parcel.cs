@@ -17,7 +17,7 @@ namespace EloquentRobot
 
         public static Parcel[] ProduceRandomParcels(int parcelCounts = 5)
         {
-            var parcels = new Stack<Parcel>();
+            var parcels = new Queue<Parcel>();
             for (int index = 0; index < parcelCounts; index++)
             {
                 var random = new Random();
@@ -29,7 +29,7 @@ namespace EloquentRobot
                     destination = places[random.Next(0, places.Length)];
                 } while (origin == destination);
 
-                parcels.Push(new Parcel(origin, destination));
+                parcels.Enqueue(new Parcel(origin, destination));
             }
 
             return parcels.ToArray();

@@ -31,8 +31,8 @@ namespace EloquentRobot
             
             string next = route.Dequeue();
             return new LazyRobot(next, route.ToArray(),
-                                 Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination))
-                                        .Where(parcel => parcel.Position != parcel.Destination).ToArray());
+                                       Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination)) // update pickup / delivery status
+                                              .Where(parcel => parcel.Position != parcel.Destination).ToArray()); // drop if destination
         }
 
         private static decimal Score(string[] route, bool pickup) => (decimal)((pickup ? 0.5 : 0) - route.Length);

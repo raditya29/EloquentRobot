@@ -12,9 +12,9 @@ namespace EloquentRobot
             string[] possibleNextPlaces = Village.RoadGraph[Position];
             string next = possibleNextPlaces[new Random().Next(0, possibleNextPlaces.Length)];
 
-            return new DumbRobot(next, null, 
-                                 Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination))
-                                        .Where(parcel => parcel.Position != parcel.Destination).ToArray());
+            return new DumbRobot(next, null,
+                                 Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination)) // update pickup / delivery status
+                                        .Where(parcel => parcel.Position != parcel.Destination).ToArray()); // drop if destination
         }
     }
 }

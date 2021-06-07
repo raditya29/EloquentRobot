@@ -28,15 +28,15 @@ namespace EloquentRobot
 
         public static Dictionary<string, string[]> BuildGraph()
         {
-            var graph = new Dictionary<string, Stack<string>>();
+            var graph = new Dictionary<string, Queue<string>>();
 
             foreach (var (place1, place2) in Roads)
             {
-                if (graph.ContainsKey(place1)) graph[place1].Push(place2);
-                else graph.Add(place1, new Stack<string>(new string[] { place2 }));
+                if (graph.ContainsKey(place1)) graph[place1].Enqueue(place2);
+                else graph.Add(place1, new Queue<string>(new string[] { place2 }));
 
-                if (graph.ContainsKey(place2)) graph[place2].Push(place1);
-                else graph.Add(place2, new Stack<string>(new string[] { place1 }));
+                if (graph.ContainsKey(place2)) graph[place2].Enqueue(place1);
+                else graph.Add(place2, new Queue<string>(new string[] { place1 }));
             }
 
             return graph.ToDictionary(g => g.Key, g => g.Value.ToArray());

@@ -19,9 +19,10 @@ namespace EloquentRobot
             }
 
             string next = route.Dequeue();
+            var notDroppedParcels = Parcels.Where(parcel => !(parcel.Destination == Position));
             return new GoalOrientedRobot(next, route.ToArray(),
-                                         Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination))
-                                                .Where(parcel => parcel.Position != parcel.Destination).ToArray());
+                                         Parcels.Select(parcel => parcel.Position != Position ? parcel : new Parcel(next, parcel.Destination)) // update pickup / delivery status
+                                                .Where(parcel => parcel.Position != parcel.Destination).ToArray()); // drop if destination
         }
     }
 }
