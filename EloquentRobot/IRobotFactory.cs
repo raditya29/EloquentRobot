@@ -9,23 +9,23 @@ namespace EloquentRobot
 
     public class DumbRobotFactory : IRobotFactory<DumbRobot>
     {
-        public DumbRobot Create(string position, Parcel[] parcels) => new DumbRobot(position, Array.Empty<string>(), parcels);
+        public DumbRobot Create(string position, Parcel[] parcels) => new DumbRobot(position, parcels);
     }
 
     public class FixedRouteRobotFactory : IRobotFactory<FixedRouteRobot>
     {
-        public FixedRouteRobot Create(string position, Parcel[] parcels) => new FixedRouteRobot(position, Array.Empty<string>(), parcels);
+        public FixedRouteRobot Create(string position, Parcel[] parcels) => new FixedRouteRobot(position, parcels, Array.Empty<string>());
     }
 
     public class GoalOrientedRobotFactory : IRobotFactory<GoalOrientedRobot>
     {
         public GoalOrientedRobot Create(string position, Parcel[] parcels) =>
-            new GoalOrientedRobot(position, Array.Empty<string>(), parcels);
+            new GoalOrientedRobot(position, parcels, Array.Empty<string>());
     }
 
     public class LazyRobotFactory : IRobotFactory<LazyRobot>
     {
         public LazyRobot Create(string position, Parcel[] parcels) =>
-            new LazyRobot(position, Array.Empty<string>(), parcels);
+            new LazyRobot(position, parcels, Array.Empty<string>());
     }
 }

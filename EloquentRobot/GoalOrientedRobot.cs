@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace EloquentRobot
 {
-    public record GoalOrientedRobot(string Position, string[] Route, Parcel[] Parcels) : Robot(Position, Route, Parcels) // start with empty route
+    public record GoalOrientedRobot(string Position, Parcel[] Parcels, string[] Route) : Robot(Position, Parcels, Route) // start with empty route
     {
         public override Robot Move()
         {
@@ -19,8 +19,9 @@ namespace EloquentRobot
             }
 
             string next = route.Dequeue();
-            return new GoalOrientedRobot(next, route.ToArray(),
-                                         UndeliveredParcels.Select(parcel => parcel.Position == Position ? new Parcel(next, parcel.Destination) : parcel).ToArray()); // update pickup / delivery status
+            return new GoalOrientedRobot(next, 
+                                         UndeliveredParcels.Select(parcel => parcel.Position == Position ? new Parcel(next, parcel.Destination) : parcel).ToArray(), // update pickup / delivery status
+                                         route.ToArray()); 
         }
     }
 }

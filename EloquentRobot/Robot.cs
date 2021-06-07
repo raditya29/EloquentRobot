@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace EloquentRobot
 {
-    public abstract record Robot(string Position, string[] Route, Parcel[] Parcels)
+    public abstract record Robot(string Position, Parcel[] Parcels, string[] Route)
     {
         public string Position { get; init; } = Position ?? throw new ArgumentNullException(nameof(Position));
-        public string[] Route { get; init; } = Route; // nullable
         public Parcel[] Parcels { get; init; } = Parcels ?? throw new ArgumentNullException(nameof(Parcels));
+        public string[] Route { get; init; } = Route; // nullable
 
         protected IEnumerable<Parcel> UndeliveredParcels => Parcels.Where(parcel => !(parcel.Position == Position && parcel.Destination == Position));
 

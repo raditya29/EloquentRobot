@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace EloquentRobot
 {
-    public record LazyRobot(string Position, string[] Route, Parcel[] Parcels) : Robot(Position, Route, Parcels)
+    public record LazyRobot(string Position, Parcel[] Parcels, string[] Route) : Robot(Position, Parcels, Route)
     {
         public override Robot Move()
         {
@@ -30,8 +30,9 @@ namespace EloquentRobot
             }
             
             string next = route.Dequeue();
-            return new LazyRobot(next, route.ToArray(),
-                                       UndeliveredParcels.Select(parcel => parcel.Position == Position ? new Parcel(next, parcel.Destination) : parcel).ToArray()); // update pickup / delivery status
+            return new LazyRobot(next,
+                                 UndeliveredParcels.Select(parcel => parcel.Position == Position ? new Parcel(next, parcel.Destination) : parcel).ToArray(), // update pickup / delivery status
+                                 route.ToArray()); 
         }
 
         private static decimal Score(string[] route, bool pickup) => (decimal)((pickup ? 0.5 : 0) - route.Length);
